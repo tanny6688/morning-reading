@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>晨读国学堂 - AI智能考官</title>
+    <title>诗海晨诵官 - AI智能考官</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Microsoft YaHei',sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:15px}
@@ -72,7 +72,6 @@
         .teacher-table th,.teacher-table td{padding:8px;border:1px solid #ddd;text-align:center}
         .teacher-table th{background:#667eea;color:#fff}
         .teacher-table tr:nth-child(even){background:#f9f9f9}
-        .teacher-table tr:hover{background:#f0f0f0}
         .teacher-summary{display:flex;gap:15px;flex-wrap:wrap;margin-bottom:10px}
         .summary-card{padding:10px 15px;background:#fff;border-radius:10px;text-align:center;min-width:80px}
         .summary-card .num{font-size:24px;font-weight:bold;color:#667eea}
@@ -85,7 +84,7 @@
             <div class="left">
                 <div class="pet-display" id="petEmoji">🥚</div>
                 <div class="info">
-                    <h1>📖 晨读国学堂</h1>
+                    <h1>📖 诗海晨诵官</h1>
                     <div class="score">灵气值：<span id="scoreDisplay">0</span> | <span id="studentDisplay">未选择学号</span></div>
                 </div>
             </div>
@@ -149,7 +148,7 @@
         <div class="chat-area" id="chatArea">
             <div class="message ai">
                 <div class="avatar">👨‍🏫</div>
-                <div class="bubble">欢迎！请先点击 <strong>👤学号</strong> 添加学生，点击 <strong>📚年级</strong> 选择年级，然后选择学号开始晨读。<br>老师请点击 <strong>🔑</strong> 查看班级情况。</div>
+                <div class="bubble">欢迎来到诗海晨诵官！<br>请先点击 <strong>👤学号</strong> 添加学生，点击 <strong>📚年级</strong> 选择年级，然后选择学号开始晨读。<br>老师请点击 <strong>🔑</strong> 查看班级情况。</div>
             </div>
         </div>
         <div class="input-area">
@@ -335,7 +334,7 @@
             var t=text.replace(/<[^>]*>/g,'').replace(/\*\*/g,'').trim();
             if(!t)return;
             var u=new SpeechSynthesisUtterance(t);
-            u.lang='zh-CN';u.rate=1.4;u.pitch=1.0;u.volume=1.0;
+            u.lang='zh-CN';u.rate=1.5;u.pitch=1.0;u.volume=1.0;
             window.speechSynthesis.speak(u);
         }
         
@@ -361,7 +360,7 @@
                 var input=document.getElementById('userInput');
                 var hasText=input.value.trim();
                 stopListening();
-                if(hasText)setTimeout(function(){sendMessage();},500);
+                if(hasText)setTimeout(function(){sendMessage();},300);
             };
             return r;
         }
@@ -399,7 +398,7 @@
             var a=role==='ai'?'👨‍🏫':'🧑‍🎓';
             d.innerHTML='<div class="avatar">'+a+'</div><div class="bubble">'+content.replace(/\n/g,'<br>')+'</div>';
             c.appendChild(d);c.scrollTop=c.scrollHeight;
-            if(role==='ai')setTimeout(function(){speakText(content);},200);
+            if(role==='ai')setTimeout(function(){speakText(content);},50);
         }
         
         function addTypingIndicator(){
