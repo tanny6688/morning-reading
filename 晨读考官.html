@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>晨读国学堂 - AI智能考官</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+            max-height: 700px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 { font-size: 28px; margin-bottom: 5px; }
+        .header .subtitle { font-size: 14px; opacity: 0.9; margin-bottom: 10px; }
+        .header .pet-status { font-size: 50px; margin: 10px 0; }
+        .header .score { font-size: 16px; opacity: 0.9; }
+        
+        .chat-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .message.user { justify-content: flex-end; }
+        
+        .message .bubble {
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            font-size: 16px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+        
+        .message.ai .bubble {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message.user .bubble {
+            background: #667eea;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .message .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 0 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        
+        .message.ai .avatar { background: #f5576c; }
+        .message.user .avatar { background: #667eea; }
+        
+        .speak-btn {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 4px 12px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 12px;
+            font-size: 12px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .speak-btn:hover { background: #e0e0e0; }
+        
+        .speak-btn.speaking {
+            background: #f5576c;
+            color: white;
+        }
+        
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .input-area input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .input-area input:focus { border-color: #667eea; }
+        
+        .input-area button {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .input-area button:hover { opacity: 0.9; }
+        .input-area button:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .voice-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: #f5576c;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        .voice-btn:hover { background: #e0455a; }
+        
+        .voice-btn.listening {
+            background: #ff0000;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 0, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+        }
+        
+        .voice-status {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            padding: 5px;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 12px 18px;
+        }
+        
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #999;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📖 晨读国学堂</h1>
+            <div class="subtitle">AI智能考官 · 游戏化背诵系统</div>
+            <div class="pet-status" id="petEmoji">🥚</div>
+            <div class="score">灵气值：<span id="scoreDisplay">0</span></div>
+        </div>
+        
+        <div class="chat-area" id="chatArea">
+            <div class="message ai">
+                <div class="avatar">👨‍🏫</div>
+                <div class="bubble">
+                    欢迎来到晨读国学堂！<br>
+                    我是你的AI考官先生。<br>
+                    请告诉我你的<strong>学号</strong>，我们开始今天的晨读吧！
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-area">
+            <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()" title="语音输入">🎤</button>
+            <input type="text" id="userInput" placeholder="输入学号或背诵内容..." onkeypress="if(event.key==='Enter') sendMessage()" />
+            <button id="sendBtn" onclick="sendMessage()">发送</button>
+        </div>
+        <div class="voice-status" id="voiceStatus">点击麦克风开始语音背诵</div>
+    </div>
+
+    <script>
+        // ==================== 配置区 ====================
+        const API_KEY = 'sk-9bd6a5c6d2904e10b4cc23ba4e92042c';
+        const APP_ID = '9dfa2bcee479439fbdd29ae3a252de76';
+        // ================================================
+        
+        let currentScore = 0;
+        let isWaiting = false;
+        let isListening = false;
+        let recognition = null;
+        
+        // 语音播报
+        function speakText(text) {
+            window.speechSynthesis.cancel();
+            var cleanText = text.replace(/<[^>]*>/g, '').replace(/\*\*/g, '').trim();
+            if (!cleanText) return;
+            var utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.lang = 'zh-CN';
+            utterance.rate = 1.0;
+            utterance.pitch = 1.1;
+            utterance.volume = 1.0;
+            window.speechSynthesis.speak(utterance);
+        }
+        
+        // 语音识别
+        function initSpeechRecognition() {
+            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                document.getElementById('voiceBtn').style.display = 'none';
+                document.getElementById('voiceStatus').textContent = '请使用Chrome浏览器';
+                return null;
+            }
+            var rec = new SpeechRecognition();
+            rec.lang = 'zh-CN';
+            rec.continuous = true;
+            rec.interimResults = true;
+            rec.onstart = function() {
+                isListening = true;
+                document.getElementById('voiceBtn').classList.add('listening');
+                document.getElementById('voiceBtn').textContent = '🔴';
+                document.getElementById('voiceStatus').textContent = '正在聆听...请背诵';
+            };
+            rec.onresult = function(event) {
+                var finalTranscript = '';
+                for (var i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    }
+                }
+                if (finalTranscript) {
+                    document.getElementById('userInput').value = finalTranscript;
+                }
+            };
+            rec.onerror = function() {
+                document.getElementById('voiceStatus').textContent = '识别错误，请重试';
+                stopListening();
+            };
+            rec.onend = function() {
+                stopListening();
+                var input = document.getElementById('userInput');
+                if (input.value.trim()) {
+                    setTimeout(function() { sendMessage(); }, 500);
+                }
+            };
+            return rec;
+        }
+        
+        function toggleVoice() {
+            if (isListening) { stopListening(); } else { startListening(); }
+        }
+        
+        function startListening() {
+            if (!recognition) recognition = initSpeechRecognition();
+            if (recognition) {
+                document.getElementById('userInput').value = '';
+                recognition.start();
+            }
+        }
+        
+        function stopListening() {
+            isListening = false;
+            document.getElementById('voiceBtn').classList.remove('listening');
+            document.getElementById('voiceBtn').textContent = '🎤';
+            document.getElementById('voiceStatus').textContent = '点击麦克风开始语音背诵';
+            if (recognition) {
+                try { recognition.stop(); } catch(e) {}
+            }
+        }
+        
+        // 宠物
+        function getPetEmoji(score) {
+            if (score >= 100) return '🦄';
+            if (score >= 50) return '🐶';
+            if (score >= 20) return '🐣';
+            return '🥚';
+        }
+        
+        function updatePetDisplay(score) {
+            document.getElementById('petEmoji').textContent = getPetEmoji(score);
+            document.getElementById('scoreDisplay').textContent = score;
+        }
+        
+        // 聊天
+        function addMessage(role, content) {
+            var chatArea = document.getElementById('chatArea');
+            var messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + role;
+            var avatarEmoji = role === 'ai' ? '👨‍🏫' : '🧑‍🎓';
+            var bubbleContent = content.replace(/\n/g, '<br>');
+            var speakBtnHtml = '';
+            if (role === 'ai') {
+                speakBtnHtml = '<br><button class="speak-btn" onclick="speakText(\'' + content.replace(/'/g, "\\'").replace(/\n/g, ' ') + '\')">🔊 朗读</button>';
+            }
+            messageDiv.innerHTML = '<div class="avatar">' + avatarEmoji + '</div><div class="bubble">' + bubbleContent + speakBtnHtml + '</div>';
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+            if (role === 'ai') {
+                setTimeout(function() { speakText(content); }, 300);
+            }
+        }
+        
+        function addTypingIndicator() {
+            var chatArea = document.getElementById('chatArea');
+            var typingDiv = document.createElement('div');
+            typingDiv.className = 'message ai';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = '<div class="avatar">👨‍🏫</div><div class="bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';
+            chatArea.appendChild(typingDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+        
+        function removeTypingIndicator() {
+            var indicator = document.getElementById('typingIndicator');
+            if (indicator) indicator.remove();
+        }
+        
+        function extractScore(reply) {
+            var match = reply.match(/灵气值[：:]\s*(\d+)/);
+            if (match) return parseInt(match[1]);
+            match = reply.match(/总灵气值[：:]\s*(\d+)/);
+            if (match) return parseInt(match[1]);
+            return null;
+        }
+        
+        // API调用
+        async function callBailianAPI(userMessage) {
+            var url = 'https://dashscope.aliyuncs.com/api/v1/apps/' + APP_ID + '/completion';
+            var payload = {
+                input: { session_id: 'classroom_session', prompt: userMessage },
+                parameters: {}
+            };
+            var response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + API_KEY,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+            if (!response.ok) {
+                throw new Error('API请求失败: ' + response.status);
+            }
+            var data = await response.json();
+            console.log('API返回:', data);
+            if (data.output && data.output.text) return data.output.text;
+            if (data.output && data.output.choices && data.output.choices.length > 0) return data.output.choices[0].message.content;
+            if (data.text) return data.text;
+            throw new Error('无法解析返回结果');
+        }
+        
+        async function sendMessage() {
+            if (isWaiting) return;
+            var input = document.getElementById('userInput');
+            var sendBtn = document.getElementById('sendBtn');
+            var message = input.value.trim();
+            if (!message) return;
+            if (isListening) stopListening();
+            addMessage('user', message);
+            input.value = '';
+            isWaiting = true;
+            sendBtn.disabled = true;
+            addTypingIndicator();
+            try {
+                var aiReply = await callBailianAPI(message);
+                removeTypingIndicator();
+                addMessage('ai', aiReply);
+                var newScore = extractScore(aiReply);
+                if (newScore !== null) {
+                    currentScore = newScore;
+                    updatePetDisplay(currentScore);
+                }
+            } catch (error) {
+                removeTypingIndicator();
+                addMessage('ai', '哎呀，为师今天有点累了，请稍后再试~');
+                console.error('错误:', error);
+            }
+            isWaiting = false;
+            sendBtn.disabled = false;
+            input.focus();
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePetDisplay(0);
+            document.getElementById('userInput').focus();
+        });
+    </script>
+</body>
+</html>
