@@ -131,4 +131,69 @@
                 <div class="avatar">👨‍🏫</div>
                 <div class="bubble">欢迎！请先点击 <strong>👤学号</strong> 设置学号，点击 <strong>📚年级</strong> 选择部编版年级，然后报学号开始晨读。</div>
             </div>
-        </div
+        </div>
+        
+        <div class="input-area">
+            <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">🎤</button>
+            <input type="text" id="userInput" placeholder="输入学号或背诵内容..." onkeypress="if(event.key==='Enter')sendMessage()" />
+            <button id="sendBtn" onclick="sendMessage()">发送</button>
+        </div>
+        <div class="voice-status" id="voiceStatus">设置学号和年级 → 开始背诵</div>
+    </div>
+
+    <script>
+        var API_KEY='sk-9bd6a5c6d2904e10b4cc23ba4e92042c';
+        var APP_ID='9dfa2bcee479439fbdd29ae3a252de76';
+        var currentScore=parseInt(localStorage.getItem('score')||'0');
+        var studentId=localStorage.getItem('studentId')||'';
+        var studentName=localStorage.getItem('studentName')||'';
+        var selectedGrade=parseInt(localStorage.getItem('grade')||'0');
+        var speakEnabled=localStorage.getItem('speak')!=='false';
+        var isWaiting=false;
+        var isListening=false;
+        var recognition=null;
+        
+        var allPoems=['咏鹅','春晓','静夜思','登鹳雀楼','望庐山瀑布','悯农','古朗月行','风','画','赠汪伦','寻隐者不遇','池上','小池','画鸡','梅花','小儿垂钓','江雪','夜宿山寺','敕勒歌','村居','咏柳','赋得古原草送别','晓出净慈寺送林子方','绝句','悯农','舟夜书所见','所见','山行','赠刘景文','夜书所见','望天门山','饮湖上初晴后雨','望洞庭','早发白帝城','采莲曲','绝句','惠崇春江晚景','三衢道中','忆江南','元日','清明','九月九日忆山东兄弟','滁州西涧','大林寺桃花','浪淘沙','鹿柴','暮江吟','题西林壁','雪梅','嫦娥','出塞','凉州词','夏日绝句','四时田园杂兴','宿新市徐公店','清平乐·村居','芙蓉楼送辛渐','塞下曲','墨梅','蝉','乞巧','示儿','题临安邸','己亥杂诗','山居秋暝','枫桥夜泊','长相思','渔歌子','游子吟','鸟鸣涧','从军行','闻官军收河南河北','黄鹤楼送孟浩然之广陵','宿建德江','西江月·夜行黄沙道中','江南春','书湖阴先生壁','寒食','迢迢牵牛星','十五夜望月','马诗','石灰吟','竹石','春夜喜雨','泊船瓜洲','游园不值','江畔独步寻花','早春呈水部张十八员外','江上渔者','浣溪沙','清平乐'];
+        var masteredPoems=JSON.parse(localStorage.getItem('mastered')||'[]');
+        var learningPoems=JSON.parse(localStorage.getItem('learning')||'[]');
+        
+        function init(){
+            updatePetDisplay();
+            updateStudentDisplay();
+            updateSpeakBtn();
+            renderPoemList();
+            renderPetEvolution();
+            highlightGradeBtn();
+            if(studentId)document.getElementById('studentIdInput').value=studentId;
+            if(studentName)document.getElementById('studentNameInput').value=studentName;
+        }
+        
+        function updatePetDisplay(){
+            var s=currentScore;
+            document.getElementById('scoreDisplay').textContent=s;
+            if(s>=100)document.getElementById('petEmoji').textContent='🦄';
+            else if(s>=50)document.getElementById('petEmoji').textContent='🐶';
+            else if(s>=20)document.getElementById('petEmoji').textContent='🐣';
+            else document.getElementById('petEmoji').textContent='🥚';
+        }
+        
+        function updateStudentDisplay(){
+            var d='未设置学号';
+            if(studentId){d='学号：'+studentId;if(studentName)d+=' ('+studentName+')';}
+            document.getElementById('studentDisplay').textContent=d;
+        }
+        
+        function updateSpeakBtn(){
+            var b=document.getElementById('speakBtn');
+            if(speakEnabled){b.textContent='🔊';b.classList.remove('active');}
+            else{b.textContent='🔇';b.classList.add('active');}
+        }
+        
+        function togglePanel(name){
+            var panel=document.getElementById(name+'Panel');
+            var all=document.querySelectorAll('.panel');
+            all.forEach(function(p){if(p!==panel)p.classList.remove('show');});
+            panel.classList.toggle('show');
+            if(name==='poem75')renderPoemList();
+            if(name==='pet')renderPetEvolution();
+        }
