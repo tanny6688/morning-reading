@@ -8,7 +8,6 @@
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Microsoft YaHei',sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:15px}
         .container{width:100%;max-width:850px;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.3);overflow:hidden;display:flex;flex-direction:column;height:95vh;max-height:780px}
-        
         .header{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}
         .header .left{display:flex;align-items:center;gap:10px}
         .header .pet-display{font-size:36px}
@@ -19,33 +18,27 @@
         .header .icon-btn{width:34px;height:34px;border-radius:50%;border:2px solid rgba(255,255,255,0.5);background:transparent;color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
         .header .icon-btn:hover{background:rgba(255,255,255,0.2)}
         .header .icon-btn.active{background:#fff;color:#f5576c;border-color:#fff}
-        
         .panel{display:none;padding:15px;background:#f8f9fa;border-bottom:1px solid #e0e0e0;max-height:250px;overflow-y:auto}
         .panel.show{display:block}
         .panel h3{font-size:14px;margin-bottom:10px;color:#333}
         .panel .close-btn{float:right;background:none;border:none;font-size:18px;cursor:pointer;color:#999}
-        
         .student-form{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
         .student-form input{padding:8px 12px;border:2px solid #ddd;border-radius:15px;font-size:14px;width:120px}
         .student-form button{padding:8px 16px;background:#667eea;color:#fff;border:none;border-radius:15px;font-size:13px;cursor:pointer}
-        
         .grade-grid{display:flex;flex-wrap:wrap;gap:6px}
         .grade-btn{padding:6px 16px;border:2px solid #ddd;border-radius:20px;background:#fff;font-size:13px;cursor:pointer}
         .grade-btn.active{background:#667eea;color:#fff;border-color:#667eea}
-        
         .poem-grid{display:flex;flex-wrap:wrap;gap:5px}
         .poem-tag{padding:4px 10px;border-radius:12px;font-size:12px;cursor:pointer}
         .poem-tag.mastered{background:#c8f7c5;color:#2d7d2d}
         .poem-tag.learning{background:#fff3cd;color:#856404}
         .poem-tag.new{background:#e0e0e0;color:#999}
-        
         .pet-evolution{display:flex;gap:15px;text-align:center;flex-wrap:wrap}
         .pet-stage{padding:10px;border-radius:10px;background:#fff;min-width:70px}
         .pet-stage.current{border:3px solid #f5576c;background:#fff5f5}
         .pet-stage .emoji{font-size:40px}
         .pet-stage .name{font-size:12px;margin-top:5px}
         .pet-stage .range{font-size:11px;color:#999}
-        
         .chat-area{flex:1;overflow-y:auto;padding:15px;background:#f8f9fa}
         .message{margin-bottom:10px;display:flex;align-items:flex-start}
         .message.user{justify-content:flex-end}
@@ -55,7 +48,6 @@
         .message .avatar{width:32px;height:32px;border-radius:50%;margin:0 8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
         .message.ai .avatar{background:#f5576c}
         .message.user .avatar{background:#667eea}
-        
         .input-area{padding:12px 15px;background:#fff;border-top:1px solid #e0e0e0;display:flex;gap:8px;align-items:center}
         .input-area input{flex:1;padding:10px 15px;border:2px solid #e0e0e0;border-radius:20px;font-size:14px;outline:none}
         .input-area input:focus{border-color:#667eea}
@@ -90,9 +82,8 @@
                 <button class="icon-btn" id="speakBtn" onclick="toggleSpeak()" title="语音播报">🔊</button>
             </div>
         </div>
-        
         <div class="panel" id="gradePanel">
-            <h3>📚 部编版语文年级选择（选一次自动保存）<button class="close-btn" onclick="closePanel('grade')">✕</button></h3>
+            <h3>📚 部编版语文年级选择<button class="close-btn" onclick="closePanel('grade')">✕</button></h3>
             <div class="grade-grid">
                 <button class="grade-btn" onclick="selectGrade(1,this)">一年级</button>
                 <button class="grade-btn" onclick="selectGrade(2,this)">二年级</button>
@@ -102,15 +93,11 @@
                 <button class="grade-btn" onclick="selectGrade(6,this)">六年级</button>
                 <button class="grade-btn" onclick="selectGrade(0,this)">全部75首</button>
             </div>
-            <p style="font-size:12px;color:#999;margin-top:8px">选择年级后，优先出该年级部编版教材古诗</p>
         </div>
-        
         <div class="panel" id="poem75Panel">
-            <h3>📋 75首必备古诗熟练度<button class="close-btn" onclick="closePanel('poem75')">✕</button></h3>
-            <p style="font-size:12px;color:#999;margin-bottom:8px">🟢熟练 🟡学习中 ⚪未背</p>
+            <h3>📋 75首必备古诗<button class="close-btn" onclick="closePanel('poem75')">✕</button></h3>
             <div class="poem-grid" id="poemList"></div>
         </div>
-        
         <div class="panel" id="studentPanel">
             <h3>👤 设置学号和姓名<button class="close-btn" onclick="closePanel('student')">✕</button></h3>
             <div class="student-form">
@@ -120,19 +107,16 @@
                 <button onclick="clearStudent()" style="background:#f5576c">清除</button>
             </div>
         </div>
-        
         <div class="panel" id="petPanel">
             <h3>🐾 灵兽进化<button class="close-btn" onclick="closePanel('pet')">✕</button></h3>
             <div class="pet-evolution" id="petEvolution"></div>
         </div>
-        
         <div class="chat-area" id="chatArea">
             <div class="message ai">
                 <div class="avatar">👨‍🏫</div>
                 <div class="bubble">欢迎！请先点击 <strong>👤学号</strong> 设置学号，点击 <strong>📚年级</strong> 选择部编版年级，然后报学号开始晨读。</div>
             </div>
         </div>
-        
         <div class="input-area">
             <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">🎤</button>
             <input type="text" id="userInput" placeholder="输入学号或背诵内容..." onkeypress="if(event.key==='Enter')sendMessage()" />
@@ -140,7 +124,6 @@
         </div>
         <div class="voice-status" id="voiceStatus">设置学号和年级 → 开始背诵</div>
     </div>
-
     <script>
         var API_KEY='sk-9bd6a5c6d2904e10b4cc23ba4e92042c';
         var APP_ID='9dfa2bcee479439fbdd29ae3a252de76';
@@ -152,48 +135,33 @@
         var isWaiting=false;
         var isListening=false;
         var recognition=null;
-        
         var allPoems=['咏鹅','春晓','静夜思','登鹳雀楼','望庐山瀑布','悯农','古朗月行','风','画','赠汪伦','寻隐者不遇','池上','小池','画鸡','梅花','小儿垂钓','江雪','夜宿山寺','敕勒歌','村居','咏柳','赋得古原草送别','晓出净慈寺送林子方','绝句','悯农','舟夜书所见','所见','山行','赠刘景文','夜书所见','望天门山','饮湖上初晴后雨','望洞庭','早发白帝城','采莲曲','绝句','惠崇春江晚景','三衢道中','忆江南','元日','清明','九月九日忆山东兄弟','滁州西涧','大林寺桃花','浪淘沙','鹿柴','暮江吟','题西林壁','雪梅','嫦娥','出塞','凉州词','夏日绝句','四时田园杂兴','宿新市徐公店','清平乐·村居','芙蓉楼送辛渐','塞下曲','墨梅','蝉','乞巧','示儿','题临安邸','己亥杂诗','山居秋暝','枫桥夜泊','长相思','渔歌子','游子吟','鸟鸣涧','从军行','闻官军收河南河北','黄鹤楼送孟浩然之广陵','宿建德江','西江月·夜行黄沙道中','江南春','书湖阴先生壁','寒食','迢迢牵牛星','十五夜望月','马诗','石灰吟','竹石','春夜喜雨','泊船瓜洲','游园不值','江畔独步寻花','早春呈水部张十八员外','江上渔者','浣溪沙','清平乐'];
         var masteredPoems=JSON.parse(localStorage.getItem('mastered')||'[]');
         var learningPoems=JSON.parse(localStorage.getItem('learning')||'[]');
         
-        function init(){
-            updatePetDisplay();
-            updateStudentDisplay();
-            updateSpeakBtn();
-            renderPoemList();
-            renderPetEvolution();
-            highlightGradeBtn();
-            if(studentId)document.getElementById('studentIdInput').value=studentId;
-            if(studentName)document.getElementById('studentNameInput').value=studentName;
+        function init(){updatePetDisplay();updateStudentDisplay();updateSpeakBtn();renderPoemList();renderPetEvolution();highlightGradeBtn();if(studentId)document.getElementById('studentIdInput').value=studentId;if(studentName)document.getElementById('studentNameInput').value=studentName;}
+        function updatePetDisplay(){var s=currentScore;document.getElementById('scoreDisplay').textContent=s;if(s>=100)document.getElementById('petEmoji').textContent='🦄';else if(s>=50)document.getElementById('petEmoji').textContent='🐶';else if(s>=20)document.getElementById('petEmoji').textContent='🐣';else document.getElementById('petEmoji').textContent='🥚';}
+        function updateStudentDisplay(){var d='未设置学号';if(studentId){d='学号：'+studentId;if(studentName)d+=' ('+studentName+')';}document.getElementById('studentDisplay').textContent=d;}
+        function updateSpeakBtn(){var b=document.getElementById('speakBtn');if(speakEnabled){b.textContent='🔊';b.classList.remove('active');}else{b.textContent='🔇';b.classList.add('active');}}
+        function togglePanel(name){var panel=document.getElementById(name+'Panel');var all=document.querySelectorAll('.panel');all.forEach(function(p){if(p!==panel)p.classList.remove('show');});panel.classList.toggle('show');if(name==='poem75')renderPoemList();if(name==='pet')renderPetEvolution();}
+        function closePanel(name){document.getElementById(name+'Panel').classList.remove('show');}
+        
+        function selectGrade(g,btn){
+            selectedGrade=g;localStorage.setItem('grade',g);
+            document.querySelectorAll('.grade-btn').forEach(function(b){b.classList.remove('active');});
+            btn.classList.add('active');
+            document.getElementById('voiceStatus').textContent='已选'+(g===0?'全部75首':g+'年级')+' | 报学号开始背诵';
+            closePanel('grade');
         }
         
-        function updatePetDisplay(){
-            var s=currentScore;
-            document.getElementById('scoreDisplay').textContent=s;
-            if(s>=100)document.getElementById('petEmoji').textContent='🦄';
-            else if(s>=50)document.getElementById('petEmoji').textContent='🐶';
-            else if(s>=20)document.getElementById('petEmoji').textContent='🐣';
-            else document.getElementById('petEmoji').textContent='🥚';
+        function highlightGradeBtn(){
+            if(selectedGrade===0)return;
+            var btns=document.querySelectorAll('.grade-btn');
+            if(btns.length>=selectedGrade)btns[selectedGrade-1].classList.add('active');
         }
         
-        function updateStudentDisplay(){
-            var d='未设置学号';
-            if(studentId){d='学号：'+studentId;if(studentName)d+=' ('+studentName+')';}
-            document.getElementById('studentDisplay').textContent=d;
-        }
-        
-        function updateSpeakBtn(){
-            var b=document.getElementById('speakBtn');
-            if(speakEnabled){b.textContent='🔊';b.classList.remove('active');}
-            else{b.textContent='🔇';b.classList.add('active');}
-        }
-        
-        function togglePanel(name){
-            var panel=document.getElementById(name+'Panel');
-            var all=document.querySelectorAll('.panel');
-            all.forEach(function(p){if(p!==panel)p.classList.remove('show');});
-            panel.classList.toggle('show');
-            if(name==='poem75')renderPoemList();
-            if(name==='pet')renderPetEvolution();
-        }
+        function saveStudent(){
+            studentId=document.getElementById('studentIdInput').value.trim();
+            studentName=document.getElementById('studentNameInput').value.trim();
+            localStorage.setItem('studentId',studentId);
+            localStorage.setItem
